@@ -1,0 +1,101 @@
+<div id="boxtoken">
+
+    <label for="inputCPF">
+        <span>CPF</span>
+        <input id="inputCPF" placeholder="Digite seu CPF" maxlength="14" onkeydown="javascript: fMasc( this, mCPF );" />
+    </label>
+
+    <button id="gettoken" disabled>
+        Busca Token
+    </button>
+    <span id="token" style="display:none;">
+        <span id="cpfName">CPF <strong></strong></span>
+        <span id="valueToken"></span>
+    </span>
+    <button id="tryAgain" style="display:none;">Fazer Nova Consulta</button>
+</div>
+
+<style>
+    #boxtoken {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    button#gettoken {
+        width: 50%;
+        background: #EAA400;
+        color: #fff;
+        border: none;
+        font-weight: 600;
+        padding: 0.7rem 0rem;
+    }
+
+    @media (max-width:736px) {
+        button#gettoken {
+            width: 100%;
+        }
+    }
+
+    button#tryAgain {
+        background: #EAA400;
+        color: #fff;
+        border: none;
+        font-weight: 600;
+        padding: 0.7rem 0rem;
+    }
+
+    button#gettoken:disabled {
+        background: #ccc
+    }
+
+    button#gettoken svg {
+        width: 15px;
+        fill: #fff;
+    }
+
+    span#token {
+        background: #04ff0087;
+        color: #fff;
+        padding: 1rem;
+        border-radius: 5px;
+        text-align: center;
+        border: 1px solid #3fff00;
+        display: flex;
+        flex-direction: column;
+    }
+
+    div#boxtoken label {
+        display: flex;
+        flex-direction: column;
+        color: #fff;
+        font-size: 10px;
+    }
+
+    input#inputCPF {
+        padding: 1rem;
+        border-radius: 5px;
+        border: 0;
+    }
+
+    div#boxtoken label span {
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        transition: top 0.5s;
+    }
+
+    @keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .spin {
+        animation: spin 2s linear infinite;
+    }
+</style>
