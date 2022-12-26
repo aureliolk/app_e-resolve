@@ -4,7 +4,7 @@ const boxToken = document.querySelector("#token")
 const buttonGetToken = document.querySelector("button#gettoken")
 const buttonTryAgain = document.querySelector("button#tryAgain")
 
-
+// Rule Input
 if (inputCpf) {
   inputCpf.onfocus = () => {
     label.style.top = "-15px"
@@ -13,7 +13,7 @@ if (inputCpf) {
     inputCpf.style.outlineColor = "#EAA400"
     console.log("focus")
   }
-  inputCpf.onblur = () => {    
+  inputCpf.onblur = () => {
     console.log("saiu")
     checkCpf()
     if (inputCpf.value.length === 0) {
@@ -22,33 +22,34 @@ if (inputCpf) {
       inputCpf.style.outlineColor = ""
     }
   }
-
-  inputCpf.onkeypress = ()=>{
+  inputCpf.onkeypress = () => {
     console.log(inputCpf.value.length)
     checkCpf()
   }
 
 }
 
-const checkCpf = ()=>{
-  if(inputCpf.value.length >= 13){
+// Function Enable or Disable Button
+const checkCpf = () => {
+  if (inputCpf.value.length >= 13) {
     buttonGetToken.removeAttribute("disabled")
-  }else{
-    buttonGetToken.setAttribute("disabled","")
+  } else {
+    buttonGetToken.setAttribute("disabled", "")
   }
 }
 
-function fMasc(objeto, mascara) {
+// Masc CPF
+const fMasc = (objeto, mascara) => {
   obj = objeto
   masc = mascara
   setTimeout("fMascEx()", 1)
 }
 
-function fMascEx() {
+const fMascEx = () => {
   obj.value = masc(obj.value)
 }
 
-function mCPF(cpf) {
+const mCPF = (cpf) => {
   cpf = cpf.replace(/\D/g, "")
   cpf = cpf.replace(/(\d{3})(\d)/, "$1.$2")
   cpf = cpf.replace(/(\d{3})(\d)/, "$1.$2")
@@ -56,34 +57,37 @@ function mCPF(cpf) {
   return cpf
 }
 
+// SVG Spin
 const spinSvg = '<svg id="customSpinIcon" class="spin" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Pro 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg>'
 
-if(buttonGetToken){
-  buttonGetToken.onclick = ()=>{
+// Button Req API
+if (buttonGetToken) {
+  buttonGetToken.onclick = () => {
     getToken()
   }
 }
 
-
+// Feth for API Token Bank Merchantil
 const getToken = () => {
-  buttonGetToken.insertAdjacentHTML("beforeend",spinSvg)
+  buttonGetToken.insertAdjacentHTML("beforeend", spinSvg)
   fetch("https://app-cardancred.vercel.app/gettoken")
-  .then(res =>  res.json())
-  .then(res => {
+    .then(res => res.json())
+    .then(res => {
       document.querySelector("span#cpfName strong").innerText = inputCpf.value
       document.querySelector("span#valueToken").innerText = `${res.access_token}`
-  })
-  .catch(err => console.log(err))
-  .finally(()=>{
-    document.querySelector("svg#customSpinIcon").remove()
-    buttonGetToken.style.display = "none"
-    document.querySelector("div#boxtoken label").style.display = "none"
-    buttonTryAgain.style.display = ""
-    boxToken.style.display = ""
-  })
+    })
+    .catch(err => console.log(err))
+    .finally(() => {
+      document.querySelector("svg#customSpinIcon").remove()
+      buttonGetToken.style.display = "none"
+      document.querySelector("div#boxtoken label").style.display = "none"
+      buttonTryAgain.style.display = ""
+      boxToken.style.display = ""
+    })
 }
 
-buttonTryAgain.onclick = ()=>{
+// Button TryAgain 
+buttonTryAgain.onclick = () => {
   buttonGetToken.style.display = ""
   document.querySelector("div#boxtoken label").style.display = ""
   buttonTryAgain.style.display = "none"
