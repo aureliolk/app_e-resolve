@@ -1,17 +1,30 @@
 <div id="boxtoken">
-
     <label for="inputCPF">
         <span>CPF</span>
         <input id="inputCPF" placeholder="Digite seu CPF" maxlength="14" onkeydown="javascript: fMasc( this, mCPF );" />
     </label>
-
+    <select id="typereq">
+        <option value="hml">Fetch HML</option>
+        <option value="prd">Fetch PRD</option>
+    </select>
     <button id="gettoken" disabled>
-        Busca Token
+        Consulta FGTS
     </button>
-    <span id="token" style="display:none;">
-        <span id="cpfName">CPF <strong></strong></span>
-        <span id="valueToken"></span>
-    </span>
+    <div id="token" style="display:none;">
+        <div>
+            <div id="cpfName">CPF: <strong></strong></div>
+            <div id="dataSimulation">Data: <strong></strong></div>
+        </div>
+        <ul id="parcelas"></ul>
+        <div id="valorTotal">Total FGTS: <strong></strong></div>
+    </div>
+    <div id="token" class="erro" style="display:none;">
+        <div>
+            <div id="status">Status: <strong></strong></div>
+            <div id="messagem">Mensagem: <strong></strong></div>
+        </div>
+    </div>
+
     <button id="tryAgain" style="display:none;">Fazer Nova Consulta</button>
 </div>
 
@@ -45,6 +58,12 @@
         padding: 0.7rem 0rem;
     }
 
+    select#typereq {
+        width: 50%;
+        border: none;
+        font-size: 14px;
+    }
+
     button#gettoken:disabled {
         background: #ccc
     }
@@ -54,7 +73,7 @@
         fill: #fff;
     }
 
-    span#token {
+    #token {
         background: #04ff0087;
         color: #fff;
         padding: 1rem;
@@ -63,6 +82,41 @@
         border: 1px solid #3fff00;
         display: flex;
         flex-direction: column;
+    }
+
+    #token.erro {
+        background: #ff0000ad;
+        border-color: #ff0000ad;
+    }
+
+    #token div {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    #token.erro div {
+        flex-direction: column;
+        width: 100%;
+        gap: 0;
+    }
+
+    #token div div {
+        gap: 10px;
+    }
+
+    ul#parcelas {
+        font-size: 15px;
+        padding: 10px;
+
+    }
+
+    ul#parcelas li {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    ul#parcelas li div {
+        gap: 10px;
     }
 
     div#boxtoken label {

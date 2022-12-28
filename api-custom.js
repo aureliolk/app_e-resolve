@@ -1,6 +1,5 @@
 const inputCpf = document.querySelector("input#inputCPF")
 const label = document.querySelector("div#boxtoken label span")
-const boxToken = document.querySelector("#token")
 const buttonGetToken = document.querySelector("button#gettoken")
 const buttonTryAgain = document.querySelector("button#tryAgain")
 
@@ -63,18 +62,35 @@ const spinSvg = '<svg id="customSpinIcon" class="spin" xmlns="http://www.w3.org/
 // Button Req API
 if (buttonGetToken) {
   buttonGetToken.onclick = () => {
-    getToken()
+    if (document.querySelector("select#typereq").value === "hml") {
+      makeHmlSimulation()
+    } else {
+      makePrdSimulation()
+    }
   }
 }
 
 // Feth for API Token Bank Merchantil
-const getToken = () => {
+const makeHmlSimulation = () => {
   buttonGetToken.insertAdjacentHTML("beforeend", spinSvg)
-  fetch("https://app-cardancred.vercel.app/gettoken")
+  fetch("https://app-cardancred.vercel.app/hmlsimulation", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ cpf: inputCpf.value.replace(/[.-]/g, '') })
+  })
     .then(res => res.json())
     .then(res => {
-      document.querySelector("span#cpfName strong").innerText = inputCpf.value
-      document.querySelector("span#valueToken").innerText = `${res.access_token}`
+      document.querySelector("#cpfName strong").innerText = res.cpf
+      document.querySelector("#dataSimulation strong").innerText = convertDate(res.dataReferenciaSaldo)
+      res.parcelas.forEach(element => {
+        document.querySelector("#parcelas").insertAdjacentHTML("beforeend", `
+        <li><div>Data: <strong id="dataParcela">${convertDate(element.dataRepasse)}</strong></div> <div>Valor <strong id="valorParcela">${formatter.format(element.valor)}</strong></div></li>
+        `)
+      });
+      document.querySelector("#valorTotal strong").innerText = formatter.format(res.valorTotal)
+      return console.log(res)
     })
     .catch(err => console.log(err))
     .finally(() => {
@@ -82,16 +98,71 @@ const getToken = () => {
       buttonGetToken.style.display = "none"
       document.querySelector("div#boxtoken label").style.display = "none"
       buttonTryAgain.style.display = ""
-      boxToken.style.display = ""
+      document.querySelector("#token").style.display = ""
     })
 }
 
-// Button TryAgain 
-buttonTryAgain.onclick = () => {
-  buttonGetToken.style.display = ""
-  document.querySelector("div#boxtoken label").style.display = ""
-  buttonTryAgain.style.display = "none"
-  boxToken.style.display = "none"
+const makePrdSimulation = () => {
+  buttonGetToken.insertAdjacentHTML("beforeend", spinSvg)
+  fetch("https://app-cardancred.vercel.app/prdsimulation", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ cpf: inputCpf.value.replace(/[.-]/g, '') })
+  })
+    .then(res => res.json())
+    .then(res => {
+      if (res.errors) {
+        document.querySelector("#token.erro").style.display = ""
+        document.querySelector("#status strong").innerText = res.errors[0].key
+        document.querySelector("#messagem strong").innerText = res.errors[0].message
+      } else {
+        document.querySelector("#token").style.display = ""
+        document.querySelector("#cpfName strong").innerText = res.cpf
+        document.querySelector("#dataSimulation strong").innerText = convertDate(res.dataReferenciaSaldo)
+        res.parcelas.forEach(element => {
+          document.querySelector("#parcelas").insertAdjacentHTML("beforeend", `
+          <li><div>Data: <strong id="dataParcela">${convertDate(element.dataRepasse)}</strong></div> <div>Valor <strong id="valorParcela">${formatter.format(element.valor)}</strong></div></li>
+          `)
+        });
+        document.querySelector("#valorTotal strong").innerText = formatter.format(res.valorTotal)
+      }
+      return console.log(res)
+    })
+    .catch(err => console.log(err))
+    .finally(() => {
+      document.querySelector("svg#customSpinIcon").remove()
+      buttonGetToken.style.display = "none"
+      document.querySelector("div#boxtoken label").style.display = "none"
+      buttonTryAgain.style.display = ""
+    })
 }
+
+const convertDate = (date) => {
+  return new Date(date).toLocaleDateString("pt-BR", {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  })
+}
+
+const formatter = new Intl.NumberFormat('pt-BR', {
+  style: 'currency',
+  currency: 'BRL'
+});
+
+// Button TryAgain 
+if (buttonTryAgain) {
+  buttonTryAgain.onclick = () => {
+    buttonGetToken.style.display = ""
+    document.querySelector("div#boxtoken label").style.display = ""
+    buttonTryAgain.style.display = "none"
+    document.querySelector("#token").style.display = "none"
+    document.querySelector("#token.erro").style.display = "none"
+    document.querySelector("#parcelas").innerHTML = ""
+  }
+}
+
 
 console.log("Api Custom On")
